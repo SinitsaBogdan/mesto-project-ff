@@ -4,11 +4,11 @@ let dialog;
 
 // --------------------------------------------------------------------------
 
-function closeDialogToKeyDownEsc (event) {
-    if (event.key === 'Escape') {
-        dialog = searchOpenDialog();
-        close(dialog)
-    };
+function closeDialogToKeyDownEsc(event) {
+	if (event.key === 'Escape') {
+		dialog = searchOpenDialog();
+		close(dialog);
+	}
 }
 
 // --------------------------------------------------------------------------
@@ -23,6 +23,6 @@ export function close(dialog) {
 	document.removeEventListener('keydown', closeDialogToKeyDownEsc);
 }
 
-export function searchOpenDialog () {
-	return document.querySelector(classSelectorPopUpOpened)
+export function searchOpenDialog() {
+	return document.querySelector(classSelectorPopUpOpened);
 }

@@ -1,23 +1,27 @@
 import * as Card from './scripts/card';
 import * as Modal from './scripts/modal';
 import { enableValidation, clearValidation } from './scripts/vadidations';
-import { initialCards } from './data/data-cards';
+import * as api from './scripts/api';
+// import { initialCards } from './data/data-cards';
 import './styles/index.css';
 
+// TODO: проблема с точками
 const validationConfig = {
 	formSelector: '.popup__form',
 	inputSelector: '.popup__input',
 	submitButtonSelector: '.popup__button',
 	inactiveButtonClass: 'popup__button_disabled',
-	inputErrorClass: 'popup__input_type_error',
-	errorClass: 'popup__error_visible',
-}
+	inputErrorClass: '.popup__input_type_error',
+	formFiledErrorClass: '.popup__form_field-error',
+	errorClass: '.popup__error_visible',
+};
 
 const modals = document.querySelectorAll('.popup');
 const cardList = document.querySelector('.places__list');
 
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
+const profileAvatar = document.querySelector('.profile__image');
 
 const btnProfileEdit = document.querySelector('.profile__edit-button');
 const btnCardAdd = document.querySelector('.profile__add-button');
@@ -34,35 +38,59 @@ const formAdd = document.forms.new_place;
 
 // --------------------------------------------------------------------------
 
+api.getProfile()
+	.then((result) => {
+		profileTitle.textContent = result.name;
+		profileDescription.textContent = result.about;
+		profileAvatar.src = result.avatar;
+	})
+	.catch((err) => console.error('Ошибка при получении профиля:', err));
+
+api.getCards()
+	.then((cards) => {
+		cards.forEach((card) => {
+			cardList.append(Card.create(card, Card.remove, Card.liked, openDialogCardView, dialogCardView));
+			console.log(card);
+		});
+	})
+	.catch((err) => console.error('Ошибка при получении карточек:', err));
+
+// --------------------------------------------------------------------------
+
 function openDialogProfileEdit(modal, form, profileTitle, profileDescription) {
 	Modal.open(modal);
-	form.name.focus();
+	clearValidation(form, validationConfig);
 	form.name.value = profileTitle.textContent;
 	form.description.value = profileDescription.textContent;
 }
 
 function saveDialogProfileEdit(event, form, title, description) {
 	const dialog = Modal.searchOpenDialog();
+	const name = form.name.value;
+	const about = form.description.value;
 	event.preventDefault();
-	title.textContent = form.name.value;
-	description.textContent = form.description.value;
+	title.textContent = name;
+	description.textContent = about;
+	api.patchProfile(name, about);
 	form.reset();
 	Modal.close(dialog);
 }
 
 function openDialogCardAdd(modal, form) {
+	form.reset();
+	clearValidation(form, validationConfig);
 	Modal.open(modal);
-	form.name.focus();
 }
 
-function saveDialogCardAdd(event, form, list, appendCard) {
+function saveDialogCardAdd(event, form, list, create) {
 	const dialog = Modal.searchOpenDialog();
 	const card = {
 		name: form.name.value,
 		link: form.link.value,
 	};
 	event.preventDefault();
-	list.insertBefore(appendCard(card, Card.remove, Card.liked, openDialogCardView, dialogCardView), list.firstElementChild);
+	list.insertBefore(create(card, Card.remove, Card.liked, openDialogCardView, dialogCardView), list.firstElementChild);
+	api.postCard(card.name, card.link);
 	form.reset();
 	Modal.close(dialog);
 }
@@ -71,18 +99,14 @@ function openDialogCardView(evt, dialog) {
 	const card = evt.target.closest('.card');
 	const cardTitle = card.querySelector('.card__title').textContent;
 	const cardScr = card.querySelector('.card__image').src;
-
 	dialogCardViewImage.src = cardScr;
 	dialogCardViewImage.alt = cardTitle;
 	dialogCardViewCaption.textContent = cardTitle;
+	clearValidation(form, validationConfig);
 	Modal.open(dialog);
 }
 
 // --------------------------------------------------------------------------
-
-initialCards.forEach((card) => {
-	cardList.append(Card.create(card, Card.remove, Card.liked, openDialogCardView, dialogCardView));
-});
 
 modals.forEach((el) => {
 	el.addEventListener('mousedown', (event) => {

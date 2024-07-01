@@ -1,0 +1,19 @@
+.button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 50px;
+	border: 1px solid transparent;
+	border-radius: 2px;
+	color: white;
+	background: #000;
+	transition: visibility 0s, background 0.3s;
+}
+
+.popup__button_disabled {
+	border: 1px solid #000;
+	opacity: 20%;
+	color: #000;
+	background-color: #fff;
+}

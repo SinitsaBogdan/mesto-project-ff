@@ -3,8 +3,9 @@
 @import url('./__close/popup__close.css');
 @import url('./__title/popup__title.css');
 @import url('./__form/popup__form.css');
-@import url('./__form_field/popup__form_field.css');
+@import url('./__label/popup__label.css');
 @import url('./__form_field-error/popup__form_field-error.css');
+@import url('./__input_type_error-error/popup__input_type_error.css');
 @import url('./__input/popup__input.css');
 @import url('./__button/popup__button.css');
 @import url('./__caption/popup__caption.css');

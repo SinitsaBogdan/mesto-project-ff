@@ -1,21 +1,14 @@
 .popup__button {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: 50px;
 	margin-top: 48px;
-	border: none;
-	border-radius: 2px;
-	color: white;
 	font-size: 18px;
 	line-height: 22px;
-	background: #000;
-	transition: visibility 0s, background 0.3s;
+	background-color: #000;
 }
 
 .popup__button:hover {
-	background: rgba(0, 0, 0, 0.8);
+	opacity: 80%;
+	color: #fff;
+	background: rgba(0, 0, 0);
 	cursor: pointer;
 }
 
